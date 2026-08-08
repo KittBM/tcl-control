@@ -23,3 +23,8 @@ captures/
 
 # OS cruft
 .DS_Store
+
+# .NET / Windows app
+windows/**/bin/
+windows/**/obj/
+*.user

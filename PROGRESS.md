@@ -74,5 +74,23 @@ if the race is specific to *auto*-triggering at `onCreate` vs. a user-initiated 
 a few seconds later).
 
 ## Not started yet
-- Windows app (user said "Android first"; protocol docs above should carry over directly — Windows BLE via WinRT `Windows.Devices.Bluetooth`, same UUIDs/frame format).
 - Power on/off control (needs a dedicated capture: toggle power via TCL Home while logging, see if anything shows up before the BLE link drops).
+
+---
+
+## 4. Windows app (`/windows/TclControlWin`, C#, WPF, .NET 8)
+
+Auto-connect investigation paused (see blocker above); started the Windows port instead.
+
+- `TclProtocol.cs` — 1:1 port of `TclProtocol.kt`: same frame format, checksum, attribute constants, `ParseIncoming`. Keep the two in sync if the protocol changes.
+- `TclSoundbarBle.cs` — GATT connect/send/notify via WinRT `Windows.Devices.Bluetooth` (`BluetoothLEDevice.FromBluetoothAddressAsync`, `GattCharacteristic.WriteValueAsync`/`ValueChanged`), plus an 8s `BluetoothLEAdvertisementWatcher` scan.
+- `MainWindow` — same control set as the Android UI (volume, mute, source, sound mode, bass/treble, atmos, log).
+- Deliberately **not** ported: auto-connect on launch (that's the open Android bug above — no point reproducing an unresolved race on a second platform) and the OS-paired-device picker (Android's `bondedDevices` equivalent). Windows version connects directly by address or via scan results instead — see `windows/README.md` for the reasoning.
+- **Build-verified.** Installed the .NET 8 SDK via `winget install Microsoft.DotNet.SDK.8` (the machine had a pre-existing x86 `dotnet.exe` runtime-only install shadowing the new x64 SDK on PATH — had to invoke `C:\Program Files\dotnet\dotnet.exe` directly). `dotnet build` succeeds with 0 warnings/0 errors. Launched the built exe as a smoke test: process stayed up and `Get-Process` showed `MainWindowTitle = "TCL S45H Control"`, `Responding = True` — UI renders and the message loop is alive.
+- **Real-hardware testing (2026-08-08) — now working end-to-end.** Connect, Volume +/- confirmed live against the actual soundbar.
+  - Connecting directly to the known bonded identity address `00:A4:1C:CD:CC:EC` → `BluetoothLEDevice.FromBluetoothAddressAsync` returns null ("could not open device"). This Windows PC had never bonded with the soundbar, so it had no IRK to resolve the identity address — same root cause as the Android "scanned address vs bonded address" gotcha above, just biting a second, unpaired OS. **Workaround: connect via the address a Scan finds instead of the hardcoded identity address**, or pair via Settings first (see below) so Windows can resolve the identity address too.
+  - Pairing the soundbar with this PC via Settings → Bluetooth & devices → Add device (classic pairing UI) did **not** by itself fix GATT service visibility — a `GetGattServicesForUuidAsync(ServiceUuid)` call still came back `status=Success` with zero services after that. Red herring; the real bug was elsewhere (next point). `device.DeviceInformation.Pairing.IsPaired` was already `true` and `protectionLevel=Encryption` at that point, so LE-level bonding was in fact fine.
+  - **Actual root cause: `GetGattServicesForUuidAsync` / `GetCharacteristicsForUuidAsync` (the UUID-filtered WinRT overloads) are flaky right after connecting** — they returned zero results for a service that a plain unfiltered `GetGattServicesAsync()` found in the very next call, moments later. This looks like a timing/caching quirk in the Windows BLE stack rather than anything about this device or pairing.
+  - **Fix:** `TclSoundbarBle.ConnectAsync` now always calls the unfiltered `GetGattServicesAsync`/`GetCharacteristicsAsync` and filters by UUID client-side (`.FirstOrDefault(s => s.Uuid == ...)`), instead of using the filtered overloads at all. Confirmed working.
+  - Kept the explicit `pairing.IsPaired`/`PairAsync()` check in `ConnectAsync` since it's useful diagnostic info and a real (if not the actual) fix for unpaired devices; harmless once already paired.
+- **Background auto-connect implemented (2026-08-08).** Unlike the Android version's flaky `onCreate`-time connect-to-fixed-address, the Windows app scans by advertised name (`tcl_B14S45H0_CCEC` - see the memory note on the real vs. documented name) in a loop (`TclSoundbarBle.ScanForDeviceNameAsync`, 15s per attempt) and connects to whatever address the scan reports, retrying on disconnect. This avoids the identity-address-resolution problem above entirely rather than needing to solve it. Stops while the user does anything manual (Connect/Reconnect/Scan buttons) and resumes on disconnect.
