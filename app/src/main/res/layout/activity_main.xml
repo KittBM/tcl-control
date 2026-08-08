@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TCL Control"
+                android:textColor="@color/on_surface"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <View
+                android:id="@+id/statusDot"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/dot_danger" />
+
+            <TextView
+                android:id="@+id/connectionStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Not connected"
+                android:textColor="@color/on_surface_muted"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnReconnect"
+            style="@style/PrimaryActionButton"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/primary_variant"
+            android:text="Reconnect"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="18dp">
+
+            <Button
+                android:id="@+id/btnConnect"
+                style="@style/PrimaryActionButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Paired" />
+
+            <Button
+                android:id="@+id/btnScan"
+                style="@style/PrimaryActionButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/surface_alt"
+                android:text="Scan BLE" />
+        </LinearLayout>
+
+        <!-- Volume -->
+        <com.google.android.material.card.MaterialCardView style="@style/SectionCard">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView style="@style/SectionTitle" android:text="VOLUME" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <Button
+                        android:id="@+id/btnVolDown"
+                        style="@style/RoundIconButton"
+                        android:text="−" />
+
+                    <TextView
+                        android:id="@+id/txtVolume"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="--"
+                        android:textColor="@color/on_surface"
+                        android:textSize="34sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnVolUp"
+                        style="@style/RoundIconButton"
+                        android:text="+" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/surface_alt"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="4dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Mute"
+                        android:textColor="@color/on_surface"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchMute"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Source -->
+        <com.google.android.material.card.MaterialCardView style="@style/SectionCard">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView style="@style/SectionTitle" android:text="SOURCE" />
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/toggleSource"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:singleSelection="true"
+                    app:selectionRequired="false">
+
+                    <Button android:id="@+id/btnSource1" style="@style/ToggleSegment" android:text="HDMI" />
+                    <Button android:id="@+id/btnSource2" style="@style/ToggleSegment" android:text="OPTICAL" />
+                    <Button android:id="@+id/btnSource3" style="@style/ToggleSegment" android:text="AUX" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Sound mode -->
+        <com.google.android.material.card.MaterialCardView style="@style/SectionCard">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView style="@style/SectionTitle" android:text="SOUND MODE" />
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/toggleMode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:singleSelection="true"
+                    app:selectionRequired="false">
+
+                    <Button android:id="@+id/btnMode1" style="@style/ToggleSegment" android:text="MUSIC" />
+                    <Button android:id="@+id/btnMode2" style="@style/ToggleSegment" android:text="VOICE" />
+                    <Button android:id="@+id/btnMode3" style="@style/ToggleSegment" android:text="MOVIE" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Bass / Treble -->
+        <com.google.android.material.card.MaterialCardView style="@style/SectionCard">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView style="@style/SectionTitle" android:text="BASS" />
+                    <TextView
+                        android:id="@+id/txtBassValue"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="0"
+                        android:textColor="@color/accent"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/seekBass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="-6"
+                    android:valueTo="6"
+                    android:stepSize="1"
+                    android:value="0"
+                    app:thumbColor="@color/accent"
+                    app:trackColorActive="@color/accent"
+                    app:trackColorInactive="@color/track_inactive"
+                    app:labelBehavior="gone" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+                    <TextView style="@style/SectionTitle" android:text="TREBLE" />
+                    <TextView
+                        android:id="@+id/txtTrebleValue"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="0"
+                        android:textColor="@color/accent"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/seekTreble"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="-6"
+                    android:valueTo="6"
+                    android:stepSize="1"
+                    android:value="0"
+                    app:thumbColor="@color/accent"
+                    app:trackColorActive="@color/accent"
+                    app:trackColorInactive="@color/track_inactive"
+                    app:labelBehavior="gone" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Atmos -->
+        <com.google.android.material.card.MaterialCardView style="@style/SectionCard">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Dolby Atmos / DTS Virtual:X"
+                    android:textColor="@color/on_surface"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchAtmos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <Button
+            android:id="@+id/btnRefresh"
+            style="@style/GhostActionButton"
+            android:layout_marginTop="4dp"
+            android:text="Refresh status" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/SectionCard"
+            android:layout_marginTop="14dp">
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="140dp">
+                <TextView
+                    android:id="@+id/logView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:textColor="@color/on_surface_muted"
+                    android:textSize="10sp"
+                    android:text="log" />
+            </ScrollView>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

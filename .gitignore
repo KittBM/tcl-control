@@ -1,0 +1,25 @@
+# Local machine config (SDK path is developer-specific)
+local.properties
+
+# Gradle
+.gradle/
+build/
+app/build/
+
+# Kotlin
+.kotlin/
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+.navigation/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Keystores
+*.jks
+*.keystore
+
+# OS cruft
+.DS_Store

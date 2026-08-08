@@ -1,0 +1,14 @@
+<resources>
+    <color name="bg">#0F0F13</color>
+    <color name="surface">#1C1C24</color>
+    <color name="surface_alt">#232330</color>
+    <color name="primary">#8B5CF6</color>
+    <color name="primary_variant">#7C3AED</color>
+    <color name="accent">#2DD4BF</color>
+    <color name="on_surface">#F5F5F7</color>
+    <color name="on_surface_muted">#9A9AA8</color>
+    <color name="hint">#6B6B7A</color>
+    <color name="success">#22C55E</color>
+    <color name="danger">#EF4444</color>
+    <color name="track_inactive">#33333F</color>
+</resources>
